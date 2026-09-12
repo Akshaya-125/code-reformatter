@@ -1,0 +1,31 @@
+<div class="editor">
+  <div class="editor__header">
+    <div class="editor__dots">
+      <span class="editor__dot editor__dot--red"></span>
+      <span class="editor__dot editor__dot--yellow"></span>
+      <span class="editor__dot editor__dot--green"></span>
+      <span class="editor__label">{{ label }}</span>
+    </div>
+    <div class="editor__actions">
+      <button class="editor__btn" (click)="paste()">Paste</button>
+      <button class="editor__btn editor__btn--danger" (click)="clear()">Clear</button>
+    </div>
+  </div>
+
+  <textarea
+    class="editor__textarea"
+    [placeholder]="placeholder"
+    [value]="value"
+    spellcheck="false"
+    (input)="onInput($event)">
+  </textarea>
+
+  <div class="editor__footer">
+    <span *ngIf="value; else empty">
+      {{ lineCount }} lines · {{ charCount }} chars
+    </span>
+    <ng-template #empty>
+      <span class="editor__hint">Empty — paste or type code above</span>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  &__pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid #374151;
+    background: #1f2937;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover:not(&--active) {
+      background: #374151;
+      color: #e5e7eb;
+    }
+
+    &--active {
+      background: #7c3aed;
+      border-color: #7c3aed;
+      color: #fff;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    }
+  }
+}

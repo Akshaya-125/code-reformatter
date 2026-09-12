@@ -1,0 +1,56 @@
+<div class="home">
+  <app-header></app-header>
+
+  <main class="home__main">
+    <!-- Toolbar -->
+    <div class="home__toolbar">
+      <select class="home__lang" [(ngModel)]="language">
+        <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+      </select>
+
+      <app-mode-selector
+        [selected]="mode"
+        (modeChange)="mode = $event">
+      </app-mode-selector>
+
+      <button class="home__sample-btn" (click)="loadSample()">
+        Load sample
+      </button>
+    </div>
+
+    <!-- Two panels -->
+    <div class="home__grid">
+      <app-code-editor
+        [value]="inputCode"
+        [placeholder]="'Paste your ' + language + ' code here...'"
+        label="Input code"
+        (valueChange)="inputCode = $event"
+        (cleared)="clear()">
+      </app-code-editor>
+
+      <app-output-panel
+        [response]="response"
+        [loading]="loading"
+        [error]="error">
+      </app-output-panel>
+    </div>
+
+    <!-- Action bar -->
+    <div class="home__action-bar">
+      <button
+        class="home__reformat-btn"
+        [disabled]="!inputCode.trim() || loading"
+        (click)="reformat()">
+        <span *ngIf="loading" class="home__spinner"></span>
+        <span *ngIf="!loading">⚡</span>
+        {{ loading ? 'Reformatting...' : 'Reformat with AI' }}
+      </button>
+
+      <div class="home__stats" *ngIf="inputCode">
+        <span>{{ inputLines }} lines</span>
+        <span>{{ inputChars }} chars</span>
+        <span *ngIf="response">→ {{ response.outputLines }} lines out</span>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,51 @@
+<div class="output">
+  <div class="output__header">
+    <div class="output__dots">
+      <span class="output__dot output__dot--red"></span>
+      <span class="output__dot output__dot--yellow"></span>
+      <span class="output__dot output__dot--green"></span>
+      <span class="output__label">Reformatted output</span>
+    </div>
+    <button
+      *ngIf="response?.reformattedCode"
+      class="output__copy"
+      (click)="copyOutput()">
+      {{ copied ? '✓ Copied!' : 'Copy' }}
+    </button>
+  </div>
+
+  <div class="output__body">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="output__loading">
+      <div class="output__spinner"></div>
+      <span>Reformatting with AI...</span>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="!loading && error" class="output__error">
+      <strong>Error</strong>
+      <p>{{ error }}</p>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && !error && !response" class="output__empty">
+      <p>⬅ Output appears here</p>
+    </div>
+
+    <!-- Result -->
+    <pre *ngIf="!loading && !error && response"
+      class="output__code">{{ response!.reformattedCode }}</pre>
+
+  </div>
+
+  <div class="output__footer">
+    <ng-container *ngIf="response; else emptyFooter">
+      <span>{{ response.outputLines }} lines · {{ response.outputChars }} chars</span>
+      <span class="badge" [ngClass]="reductionClass">{{ reductionLabel }}</span>
+    </ng-container>
+    <ng-template #emptyFooter>
+      <span class="output__hint">Empty</span>
+    </ng-template>
+  </div>
+</div>

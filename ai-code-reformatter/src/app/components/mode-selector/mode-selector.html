@@ -1,0 +1,10 @@
+<div class="modes">
+  <button
+    *ngFor="let mode of modes"
+    class="modes__pill"
+    [class.modes__pill--active]="selected === mode.id"
+    [title]="mode.desc"
+    (click)="select(mode.id)">
+    {{ mode.label }}
+  </button>
+</div>

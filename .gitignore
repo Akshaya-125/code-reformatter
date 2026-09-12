@@ -1,0 +1,21 @@
+# Angular
+ai-code-reformatter/node_modules/
+ai-code-reformatter/.angular/
+ai-code-reformatter/dist/
+
+# Django — IMPORTANT: never push .env
+ai-code-reformatter/django-ai-service/.env
+ai-code-reformatter/django-ai-service/__pycache__/
+ai-code-reformatter/django-ai-service/db.sqlite3
+ai-code-reformatter/django-ai-service/reformatter/__pycache__/
+ai-code-reformatter/django-ai-service/core/__pycache__/
+
+# Spring Boot
+demo/target/
+demo/.mvn/
+
+# General
+*.class
+*.pyc
+*.log
+.env
