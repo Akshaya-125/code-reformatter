@@ -11,7 +11,7 @@ export class ReformatterService {
 
   // Now pointing to Spring Boot on 8081
   // Spring Boot forwards to Django on 8000
-  private apiUrl = 'http://localhost:8081/api/reformat';
+  private apiUrl = 'https://spring-boot-service-6hal.onrender.com/api/reformat';
 
   constructor(private http: HttpClient) {}
 
