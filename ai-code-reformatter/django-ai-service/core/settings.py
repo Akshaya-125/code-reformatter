@@ -10,8 +10,13 @@ SECRET_KEY = 'django-insecure-change-this-in-production'
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','django-ai-service.onrender.com','.onrender.com']
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
+    'http://localhost:8081',
+    'https://your-angular-app.vercel.app',   # ← add later after Angular deploy
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
