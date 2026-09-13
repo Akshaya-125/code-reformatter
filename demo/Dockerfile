@@ -1,20 +1,17 @@
-# Stage 1 — Build the JAR using Maven
+# Stage 1 — Build using Maven wrapper
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy Maven files
-COPY mvnw .
-COPY .mvn .mvn
+# Install Maven directly — no need for mvnw
+RUN apk add --no-cache maven
+
+# Copy pom.xml first for dependency caching
 COPY pom.xml .
+RUN mvn dependency:resolve -q
 
-# Download dependencies first (faster rebuilds)
-RUN ./mvnw dependency:resolve -q
-
-# Copy source code
+# Copy source code and build
 COPY src src
-
-# Build the JAR
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Stage 2 — Run the JAR
 FROM eclipse-temurin:17-jre-alpine
