@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8000"})
+@CrossOrigin(origins = {"http://localhost:4200", "https://code-reformatter.vercel.app"})
 public class ReformatController {
 
     @Autowired
