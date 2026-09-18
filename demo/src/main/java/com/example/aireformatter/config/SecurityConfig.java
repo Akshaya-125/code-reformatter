@@ -27,6 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -67,6 +68,16 @@ public class SecurityConfig {
                     HttpServletResponse response,
                     FilterChain filterChain) throws IOException, ServletException {
 
+                // Handle CORS preflight requests
+                if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                    response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                    response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                    response.setHeader("Access-Control-Allow-Headers", "*");
+                    response.setHeader("Access-Control-Allow-Credentials", "true");
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return;
+                }
+
                 String authHeader = request.getHeader("Authorization");
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     String token = authHeader.substring(7);
@@ -85,20 +96,18 @@ public class SecurityConfig {
         };
     }
 
-   @Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of(
-        "http://localhost:4200",
-        "https://code-reformatter.vercel.app"  // ← add your Vercel URL
-    ));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowCredentials(true);
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return source;
-}
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOriginPatterns(List.of("*")); // allow all origins
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
