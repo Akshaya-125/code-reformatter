@@ -15,7 +15,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1','django-ai-service.onrender.com','.onr
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'http://localhost:8081',
-    'https://your-angular-app.vercel.app',   # ← add later after Angular deploy
+    'https://code-reformatter.vercel.app',  # ← add this
+    'https://spring-boot-service-6hal.onrender.com',  # ← add later after Angular deploy
 ]
 INSTALLED_APPS = [
     'django.contrib.admin',
