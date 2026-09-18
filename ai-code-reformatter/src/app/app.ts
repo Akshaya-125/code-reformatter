@@ -1,12 +1,26 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  template: '<router-outlet></router-outlet>'
 })
-export class App {
-  protected readonly title = signal('ai-code-reformatter');
+export class AppComponent implements OnInit {
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    // Wake up both Render services when app loads
+    this.pingServices();
+  }
+
+  private pingServices(): void {
+    this.http.get('https://django-ai-service.onrender.com/api/health/')
+      .subscribe({ error: () => {} });
+    this.http.get('https://spring-boot-service-6hal.onrender.com/api/health')
+      .subscribe({ error: () => {} });
+  }
 }
