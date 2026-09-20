@@ -10,14 +10,13 @@ SECRET_KEY = 'django-insecure-change-this-in-production'
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','django-ai-service.onrender.com','.onrender.com']
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'http://localhost:8081',
-    'https://code-reformatter.vercel.app',  # ← add this
-    'https://spring-boot-service-6hal.onrender.com',  # ← add later after Angular deploy
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'django-ai-service.onrender.com',
+    '.onrender.com'
 ]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,9 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',        # Django REST framework
-    'corsheaders',           # allows Angular to call Django
-    'reformatter',           # our AI app
+    'rest_framework',
+    'corsheaders',
+    'reformatter',
 ]
 
 MIDDLEWARE = [
@@ -82,11 +81,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS — allow Angular dev server to call Django
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',  # Angular
-    'http://localhost:8080',  # Spring Boot (later)
-]
+# CORS — single definition, all allowed origins
+CORS_ALLOW_ALL_ORIGINS = True  # allows everything for now
 
 # REST Framework settings
 REST_FRAMEWORK = {
