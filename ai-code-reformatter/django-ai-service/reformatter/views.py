@@ -1,5 +1,7 @@
 import os
 import json
+import time
+
 from google import genai
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -63,10 +65,24 @@ Code:
 
         print("Before Gemini call")
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+        response = None
+
+        for attempt in range(5):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=prompt
+                )
+                break
+
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: {e}")
+
+                if "503" in str(e) and attempt < 4:
+                    time.sleep(3)
+                    continue
+
+                raise
 
         print("After Gemini call")
 
@@ -74,8 +90,10 @@ Code:
 
         if reformatted.startswith("```"):
             lines = reformatted.split("\n")[1:]
+
             if lines and lines[-1].strip() == "```":
                 lines = lines[:-1]
+
             reformatted = "\n".join(lines).strip()
 
         input_lines = len(code.splitlines())
@@ -99,8 +117,15 @@ Code:
             "reductionPercent": reduction
         })
 
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {"error": "Invalid JSON"},
+            status=400
+        )
+
     except Exception as e:
         print("ERROR:", str(e))
+
         return JsonResponse(
             {"error": str(e)},
             status=500
