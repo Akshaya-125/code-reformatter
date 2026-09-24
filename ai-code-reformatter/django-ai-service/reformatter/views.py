@@ -19,10 +19,30 @@ MODE_PROMPTS = {
     'comment': 'Add clear concise inline comments explaining what each section does. Focus on logic and non-obvious decisions. Return ONLY the commented code, no explanation, no markdown fences.',
 }
 
+# Try models in order — if one is deprecated, use next
+MODELS_TO_TRY = [
+    'gemini-3.6-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+]
+
+def call_gemini(prompt):
+    last_error = None
+    for model_name in MODELS_TO_TRY:
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
+            return response.text or ''
+        except Exception as e:
+            last_error = e
+            continue
+    raise last_error
+
 @csrf_exempt
 @require_http_methods(['POST', 'OPTIONS'])
 def reformat_code(request):
-    # Handle preflight CORS request from browser
     if request.method == 'OPTIONS':
         response = JsonResponse({})
         response['Access-Control-Allow-Origin'] = '*'
@@ -31,19 +51,16 @@ def reformat_code(request):
         return response
 
     try:
-        # Parse request body
         body     = json.loads(request.body)
         code     = body.get('code', '').strip()
         language = body.get('language', 'JavaScript')
         mode     = body.get('mode', 'shorten')
 
-        # Validate inputs
         if not code:
             return JsonResponse({'error': 'No code provided'}, status=400)
         if mode not in MODE_PROMPTS:
             return JsonResponse({'error': f'Invalid mode: {mode}'}, status=400)
 
-        # Build prompt
         prompt = f"""You are an expert {language} developer.
 {MODE_PROMPTS[mode]}
 
@@ -52,12 +69,7 @@ Language: {language}
 Code:
 {code}"""
 
-        # Call Gemini API using new package
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt
-        )
-        raw_output  = response.text or ''
+        raw_output = call_gemini(prompt)
 
         # Clean markdown fences if Gemini adds them
         reformatted = raw_output
@@ -69,7 +81,6 @@ Code:
             reformatted = '\n'.join(lines)
         reformatted = reformatted.strip()
 
-        # Calculate stats
         input_lines  = len(code.split('\n'))
         output_lines = len(reformatted.split('\n'))
         input_chars  = len(code)
