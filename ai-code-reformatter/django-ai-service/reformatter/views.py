@@ -13,10 +13,10 @@ client = genai.Client(
 )
 
 MODE_PROMPTS = {
-    "shorten": "Reformat the code to be shorter and more concise. Combine redundant logic, use language idioms, remove unnecessary variables. Keep all functionality intact. Return ONLY the code.",
-    "minify": "Minify the code as much as possible. Return ONLY the code.",
-    "clean": "Clean up the code: fix indentation, consistent naming, remove dead code and unused variables. Return ONLY the code.",
-    "comment": "Add clear concise inline comments explaining what each section does. Return ONLY the code."
+    "shorten": "Reformat the code to be shorter and more concise. Keep functionality intact. Return only code.",
+    "minify": "Minify the code as much as possible. Return only code.",
+    "clean": "Clean up the code and improve readability. Return only code.",
+    "comment": "Add concise inline comments. Return only code."
 }
 
 
@@ -61,10 +61,14 @@ Code:
 {code}
 """
 
+        print("Before Gemini call")
+
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=prompt
         )
+
+        print("After Gemini call")
 
         reformatted = (response.text or "").strip()
 
@@ -95,13 +99,8 @@ Code:
             "reductionPercent": reduction
         })
 
-    except json.JSONDecodeError:
-        return JsonResponse(
-            {"error": "Invalid JSON"},
-            status=400
-        )
-
     except Exception as e:
+        print("ERROR:", str(e))
         return JsonResponse(
             {"error": str(e)},
             status=500
