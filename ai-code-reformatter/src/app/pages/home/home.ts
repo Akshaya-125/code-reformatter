@@ -89,6 +89,7 @@ export class HomeComponent {
   loadSample(): void {
     this.response = null;    
   this.error = ''; 
+  this.loading = false;
     const samples: Partial<Record<Language, string>> = {
       JavaScript: `function getUserData(userId) {
     return new Promise(function(resolve, reject) {
